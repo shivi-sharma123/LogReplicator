@@ -88,8 +88,3 @@ The backend exposes a simple control API:
 - `POST /control/submit`: Submits a new command string to the cluster leader.
 
 **WebSocket**: `ws://localhost:8080/ws` emits the full cluster state JSON every 100ms.
-
----
-
-## 📜 License
-MIT
