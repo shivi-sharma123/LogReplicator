@@ -1,0 +1,304 @@
+:root {
+  --bg-color: #0f172a;
+  --panel-bg: #1e293b;
+  --text-main: #e2e8f0;
+  --text-muted: #94a3b8;
+  --accent: #3b82f6;
+  --danger: #ef4444;
+  --success: #22c55e;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  max-width: none;
+  /* Override any potential max-width */
+}
+
+.app-header {
+  padding: 1rem 2rem;
+  background: var(--panel-bg);
+  border-bottom: 1px solid #334155;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.status-badge .online {
+  color: var(--success);
+  font-weight: bold;
+}
+
+.status-badge .offline {
+  color: var(--danger);
+  font-weight: bold;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.visualization-area {
+  flex: 1 1 auto;
+  min-width: 0;
+  position: relative;
+  background: radial-gradient(circle at center, #1e293b 0%, #0f172a 70%);
+  border-right: 1px solid #334155;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  /* Ensure SVG doesn't overflow */
+}
+
+.middle-panel {
+  width: 400px;
+  min-width: 350px;
+  max-width: 450px;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  background: #0f172a;
+  border-right: 1px solid #334155;
+}
+
+.sidebar {
+  width: 300px;
+  min-width: 300px;
+  background: #111827;
+  border-left: 1px solid #334155;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+
+
+
+/* Clean up old middle-panel styles */
+
+/* Replicated Log Styles */
+.replicated-log {
+  flex: 1;
+  overflow: hidden;
+  /* Prevent spillover */
+}
+
+.log-grid {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.log-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-bottom: 1px solid #1e293b;
+  height: 60px;
+  padding: 0 1rem;
+}
+
+.node-id-badge {
+  background: #334155;
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  min-width: 40px;
+  text-align: center;
+  margin-right: 1rem;
+}
+
+.entries {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+  overflow-x: auto;
+  position: relative;
+  padding-right: 2rem;
+}
+
+.log-track-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #334155;
+  z-index: 0;
+  top: 50%;
+}
+
+.log-entry-block {
+  background: #22c55e;
+  border: 1px solid #14532d;
+  height: 36px;
+  min-width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: #052e16;
+  font-weight: bold;
+  z-index: 1;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.log-track-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #334155;
+  z-index: 1;
+}
+
+.empty-log {
+  font-size: 0.75rem;
+  color: #64748b;
+  z-index: 2;
+  background: #0f172a;
+  /* block the line */
+  padding-right: 5px;
+}
+
+.panel {
+  background: var(--panel-bg);
+  /* border-radius: 8px; REMOVED radius for cleaner splits */
+  padding: 1rem;
+  /* border: 1px solid #334155; REMOVED border for cleaner splits */
+  display: flex;
+  flex-direction: column;
+}
+
+.replicated-log.panel {
+  height: 100%;
+  padding: 0;
+  background: transparent;
+}
+
+.replicated-log h3 {
+  padding: 1rem;
+  margin: 0;
+  background: #1e293b;
+  border-bottom: 1px solid #334155;
+  font-size: 0.9rem;
+}
+
+.panel h3 {
+  margin-top: 0;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  border-bottom: 1px solid #334155;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Control Panel */
+.node-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.node-control-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.node-label {
+  font-weight: bold;
+}
+
+.btn {
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: white;
+  transition: filter 0.2s;
+}
+
+.btn:hover {
+  filter: brightness(1.1);
+}
+
+.btn-danger {
+  background-color: var(--danger);
+}
+
+.btn-success {
+  background-color: var(--success);
+}
+
+/* Log Stream */
+.log-stream {
+  flex: 1;
+  overflow: hidden;
+}
+
+.log-container {
+  flex: 1;
+  overflow-y: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.log-entry {
+  padding: 0.2rem 0;
+  border-bottom: 1px solid #334155;
+}
+
+.log-time {
+  color: #64748b;
+  margin-right: 0.5rem;
+}
+
+.log-source {
+  color: var(--accent);
+  margin-right: 0.5rem;
+  font-weight: bold;
+}
+
+.log-message {
+  color: var(--text-main);
+}
