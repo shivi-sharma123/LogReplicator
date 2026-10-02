@@ -1,4 +1,4 @@
-# Rafty — Architecture & Raft Algorithm Guide
+# LogReplicator — Architecture & Raft Algorithm Guide
 
 ## Table of Contents
 
@@ -49,7 +49,7 @@ Raft is a **consensus algorithm** designed to be understandable. Its goal: allow
 
 ## Project Overview
 
-**Rafty** is an interactive Raft consensus algorithm simulator and visualizer. It consists of:
+**LogReplicator** is an interactive Raft consensus algorithm simulator and visualizer. It consists of:
 
 - A **Go backend** that runs a real, in-memory 5-node Raft cluster
 - A **React frontend** that visualizes the cluster state in real time
@@ -62,7 +62,7 @@ This is an educational tool — you can watch leader elections happen live, repl
 ## Directory Structure
 
 ```
-rafty/
+LogReplicator/
 ├── backend/
 │   ├── raft/
 │   │   ├── node.go          # RaftNode state machine
@@ -131,25 +131,25 @@ Leader-only volatile (reset on becoming leader):
 
 #### Key methods
 
-| Method | Role | Description |
-|---|---|---|
-| `run()` | All | Main event loop; dispatches to role-specific handler |
-| `runFollower()` | Follower | Waits for heartbeats; starts election on timeout |
-| `runCandidate()` | Candidate | Increments term, broadcasts votes, counts results |
-| `runLeader()` | Leader | Sends heartbeats and replicates new log entries every 100ms |
-| `handleRequestVote()` | All | Grants or rejects vote request from a candidate |
-| `handleAppendEntries()` | All | Processes heartbeat/replication RPC from leader |
-| `broadcastRequestVote()` | Candidate | Sends `RequestVote` RPC to all peers |
-| `broadcastAppendEntries()` | Leader | Sends `AppendEntries` RPC to all peers |
-| `SubmitCommand(cmd)` | Leader | Appends a new entry to the leader's log |
+| Method                     | Role      | Description                                                 |
+| -------------------------- | --------- | ----------------------------------------------------------- |
+| `run()`                    | All       | Main event loop; dispatches to role-specific handler        |
+| `runFollower()`            | Follower  | Waits for heartbeats; starts election on timeout            |
+| `runCandidate()`           | Candidate | Increments term, broadcasts votes, counts results           |
+| `runLeader()`              | Leader    | Sends heartbeats and replicates new log entries every 100ms |
+| `handleRequestVote()`      | All       | Grants or rejects vote request from a candidate             |
+| `handleAppendEntries()`    | All       | Processes heartbeat/replication RPC from leader             |
+| `broadcastRequestVote()`   | Candidate | Sends `RequestVote` RPC to all peers                        |
+| `broadcastAppendEntries()` | Leader    | Sends `AppendEntries` RPC to all peers                      |
+| `SubmitCommand(cmd)`       | Leader    | Appends a new entry to the leader's log                     |
 
 #### Timing
 
-| Parameter | Value |
-|---|---|
-| Election timeout | 300–600ms (randomized per node) |
-| Heartbeat interval | 100ms |
-| Votes required for majority | `⌊N/2⌋ + 1` = 3 out of 5 |
+| Parameter                   | Value                           |
+| --------------------------- | ------------------------------- |
+| Election timeout            | 300–600ms (randomized per node) |
+| Heartbeat interval          | 100ms                           |
+| Votes required for majority | `⌊N/2⌋ + 1` = 3 out of 5        |
 
 ---
 
@@ -165,6 +165,7 @@ VirtualTransport
 ```
 
 **Send flow:**
+
 1. Caller calls `transport.Send(msg)`
 2. If `rand.Float64() < dropRate` → drop silently (simulates packet loss)
 3. Otherwise, spawn goroutine: sleep `latency`, then write to `inboxes[msg.To]`
@@ -184,14 +185,14 @@ ClusterController
 └── Transport  *VirtualTransport
 ```
 
-| Method | Description |
-|---|---|
-| `NewClusterController(n)` | Creates `n` nodes with full-mesh peering |
-| `Start()` | Launches goroutines for all nodes |
-| `StopNode(id)` | Sets `IsAlive = false` on a node |
-| `StartNode(id)` | Sets `IsAlive = true`, resets heartbeat timer |
-| `Submit(cmd)` | Finds the current leader and calls `SubmitCommand(cmd)` |
-| `GetState()` | Returns a JSON-serializable snapshot of all nodes |
+| Method                    | Description                                             |
+| ------------------------- | ------------------------------------------------------- |
+| `NewClusterController(n)` | Creates `n` nodes with full-mesh peering                |
+| `Start()`                 | Launches goroutines for all nodes                       |
+| `StopNode(id)`            | Sets `IsAlive = false` on a node                        |
+| `StartNode(id)`           | Sets `IsAlive = true`, resets heartbeat timer           |
+| `Submit(cmd)`             | Finds the current leader and calls `SubmitCommand(cmd)` |
+| `GetState()`              | Returns a JSON-serializable snapshot of all nodes       |
 
 ---
 
@@ -226,12 +227,12 @@ Message {
 
 Built with the **Gin** framework. CORS is open for local development.
 
-| Endpoint | Method | Description |
-|---|---|---|
-| `/control/stop/:id` | POST | Kill node `id` |
-| `/control/start/:id` | POST | Revive node `id` |
-| `/control/submit` | POST | Submit command to leader; body: `{"command": "..."}` |
-| `/ws` | GET | WebSocket — streams full cluster state every 100ms |
+| Endpoint             | Method | Description                                          |
+| -------------------- | ------ | ---------------------------------------------------- |
+| `/control/stop/:id`  | POST   | Kill node `id`                                       |
+| `/control/start/:id` | POST   | Revive node `id`                                     |
+| `/control/submit`    | POST   | Submit command to leader; body: `{"command": "..."}` |
+| `/ws`                | GET    | WebSocket — streams full cluster state every 100ms   |
 
 #### WebSocket state payload (every 100ms)
 
@@ -272,12 +273,12 @@ Root component. Owns all shared state and communicates with the backend.
 
 Pentagon topology rendered in SVG. Nodes are placed evenly on a circle.
 
-| Node state | Color | Icon |
-|---|---|---|
-| Follower | Blue | HeartPulse |
-| Candidate | Yellow | Activity |
-| Leader | Green + halo | Crown |
-| Dead | Red | Skull |
+| Node state | Color        | Icon       |
+| ---------- | ------------ | ---------- |
+| Follower   | Blue         | HeartPulse |
+| Candidate  | Yellow       | Activity   |
+| Leader     | Green + halo | Crown      |
+| Dead       | Red          | Skull      |
 
 - Full-mesh dashed lines connect all nodes
 - Animated green pulses travel from the leader to each alive follower (heartbeat visual)
@@ -388,6 +389,7 @@ Frontend:
 ### Core Problem: Distributed Consensus
 
 Given N servers, how do they agree on a sequence of values when:
+
 - Any server can crash at any time
 - Messages can be delayed or dropped
 - There is no shared clock
@@ -424,6 +426,7 @@ Term 1         Term 2        Term 3 ...
 **Trigger:** A Follower hasn't heard from a leader within its election timeout (300–600ms, randomized to prevent ties).
 
 **Process:**
+
 1. Increment `CurrentTerm`, vote for self, become Candidate
 2. Send `RequestVote(term, candidateId, lastLogIndex, lastLogTerm)` to all peers
 3. Peer grants vote if and only if:
@@ -434,6 +437,7 @@ Term 1         Term 2        Term 3 ...
 5. Leader sends heartbeats immediately to prevent new elections
 
 **Up-to-date log comparison:**
+
 - Higher `LastLogTerm` wins
 - If same `LastLogTerm`, higher `LastLogIndex` wins
 
@@ -444,6 +448,7 @@ Term 1         Term 2        Term 3 ...
 The leader is the **single source of truth** for the log. It replicates entries to followers.
 
 **`AppendEntries` RPC (also serves as heartbeat):**
+
 ```
 Leader → Follower:
   term           — current leader's term
@@ -459,6 +464,7 @@ Leader → Follower:
 **Commit rule:** An entry is committed once the leader has replicated it to a majority. The leader then advances `commitIndex`, and followers learn of this via the next `AppendEntries`.
 
 **Log conflict resolution:**
+
 ```
 Leader:   [1][1][2][3][3]
 Follower: [1][1][2][4]    ← conflicting entries from an old term
@@ -474,27 +480,27 @@ Result: [1][1][2][3][3]  ← follower now matches leader
 
 Raft provides these properties in all non-Byzantine failure scenarios:
 
-| Property | Guarantee |
-|---|---|
-| **Election Safety** | At most one leader per term |
-| **Leader Append-Only** | A leader never overwrites or deletes its own log entries |
-| **Log Matching** | If two logs agree at index `i` and term `t`, all preceding entries are identical |
-| **Leader Completeness** | All committed entries from previous terms are present on any new leader |
-| **State Machine Safety** | All servers apply the same log entry at each index |
+| Property                 | Guarantee                                                                        |
+| ------------------------ | -------------------------------------------------------------------------------- |
+| **Election Safety**      | At most one leader per term                                                      |
+| **Leader Append-Only**   | A leader never overwrites or deletes its own log entries                         |
+| **Log Matching**         | If two logs agree at index `i` and term `t`, all preceding entries are identical |
+| **Leader Completeness**  | All committed entries from previous terms are present on any new leader          |
+| **State Machine Safety** | All servers apply the same log entry at each index                               |
 
 ### What This Project Implements
 
-| Feature | Status | Notes |
-|---|---|---|
-| Leader election | Fully implemented | Randomized timeouts, majority voting, term tracking |
-| Log replication | Fully implemented | AppendEntries, conflict detection and resolution |
-| Heartbeats | Fully implemented | 100ms interval; used to prevent spurious elections |
-| Node crash simulation | Fully implemented | Via `IsAlive` flag; leader steps down, new election triggered |
-| Network chaos | In code, not in UI | `dropRate` and `latency` on VirtualTransport |
-| Log compaction (snapshots) | Not implemented | Intentional — not needed for visualization |
-| Persistence to disk | Not implemented | Intentional — state resets on restart are fine for demo |
-| Dynamic cluster membership | Not implemented | Fixed 5-node cluster |
-| Client session deduplication | Not implemented | Commands are idempotent strings in this simulator |
+| Feature                      | Status             | Notes                                                         |
+| ---------------------------- | ------------------ | ------------------------------------------------------------- |
+| Leader election              | Fully implemented  | Randomized timeouts, majority voting, term tracking           |
+| Log replication              | Fully implemented  | AppendEntries, conflict detection and resolution              |
+| Heartbeats                   | Fully implemented  | 100ms interval; used to prevent spurious elections            |
+| Node crash simulation        | Fully implemented  | Via `IsAlive` flag; leader steps down, new election triggered |
+| Network chaos                | In code, not in UI | `dropRate` and `latency` on VirtualTransport                  |
+| Log compaction (snapshots)   | Not implemented    | Intentional — not needed for visualization                    |
+| Persistence to disk          | Not implemented    | Intentional — state resets on restart are fine for demo       |
+| Dynamic cluster membership   | Not implemented    | Fixed 5-node cluster                                          |
+| Client session deduplication | Not implemented    | Commands are idempotent strings in this simulator             |
 
 ---
 
@@ -502,7 +508,7 @@ Raft provides these properties in all non-Byzantine failure scenarios:
 
 ```
 ┌────────────────────────────────────────────────────────────────────┐
-│                         RAFTY SIMULATOR                            │
+│                         LogReplicator SIMULATOR                            │
 └────────────────────────────────────────────────────────────────────┘
 
   FRONTEND (React + Vite)                 BACKEND (Go)
@@ -555,8 +561,8 @@ make run-frontend
 make stop
 ```
 
-| Service | URL |
-|---|---|
-| Frontend | http://localhost:5173 |
-| Backend API | http://localhost:8080 |
-| WebSocket | ws://localhost:8080/ws |
+| Service     | URL                    |
+| ----------- | ---------------------- |
+| Frontend    | http://localhost:5173  |
+| Backend API | http://localhost:8080  |
+| WebSocket   | ws://localhost:8080/ws |

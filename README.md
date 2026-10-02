@@ -1,14 +1,16 @@
-# Rafty: The Raft Consensus Algorithm Visualizer
+# LogReplicator: The Raft Consensus Algorithm Visualizer
 
-**Rafty** is a "Chaos Monkey" style visualizer for the Raft Consensus Algorithm. It simulates a cluster of 5 nodes with a virtual networking layer, allowing you to deterministically inject faults (partition networks, kill nodes) and watch the cluster heal and reach consensus in real-time.
+**LogReplicator** is a "Chaos Monkey" style visualizer for the Raft Consensus Algorithm. It simulates a cluster of 5 nodes with a virtual networking layer, allowing you to deterministically inject faults (partition networks, kill nodes) and watch the cluster heal and reach consensus in real-time.
 
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - **Go** (1.20+)
 - **Node.js** (16+) & **npm**
 
 ### Running the Simulator
+
 We have provided a `Makefile` for convenience.
 
 1.  **Clone the repository**.
@@ -16,11 +18,14 @@ We have provided a `Makefile` for convenience.
     ```bash
     make run
     ```
+
     - **Frontend**: http://localhost:5173
     - **Backend API**: http://localhost:8080
 
 ### Stopping
+
 To kill all running processes:
+
 ```bash
 make stop
 ```
@@ -30,6 +35,7 @@ make stop
 ## 🎮 How to Use
 
 ### The Interface
+
 - **Left Panel (The Pentagon)**: This is your cluster.
   - **Blue Nodes**: Followers.
   - **Yellow Nodes**: Candidates (requesting votes).
@@ -43,6 +49,7 @@ make stop
   - **Send Work Request**: Simulates a client sending a command to the cluster.
 
 ### Scenarios to Try
+
 1.  **Leader Election**: Watch the initial election. A leader will emerge naturally.
 2.  **Log Replication**: Click "Send Work Request". Watch the green log entries propagate to all followers.
 3.  **Chaos - Killing the Leader**:
@@ -61,6 +68,7 @@ make stop
 The project is split into a Go backend and a React frontend.
 
 ### Backend (`/backend`)
+
 - **Language**: Go
 - **Framework**: Standard Library + Gin for API
 - **Key Files**:
@@ -69,6 +77,7 @@ The project is split into a Go backend and a React frontend.
   - `raft/controller.go`: The Cluster Controller. It acts as the "God Object" that ticks the simulation and broadcasts state to the frontend via WebSockets.
 
 ### Frontend (`/frontend`)
+
 - **Language**: JavaScript (React + Vite)
 - **Key Libraries**:
   - `framer-motion`: For the smooth animations of nodes and messages.
